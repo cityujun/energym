@@ -117,14 +117,14 @@ class EnvEPlusFMU(EnvFMU):
         """
         super().initialize()
         self._last_output = {}
-        _ = self.step({})
+        # _ = self.step({})
 
     def step(self, inputs=None):
         if inputs is None:
             inputs = {}
-        output = super().step(inputs)
+        output, done = super().step(inputs)
         self._last_output = output
-        return output
+        return output, done
 
     def get_output(self):
         return self._last_output

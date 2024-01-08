@@ -14181,9 +14181,9 @@
 
   Output:Variable,*,Zone Air Temperature,timestep;
 
-  Output:Variable,TZ_01,Zone Thermostat Heating Setpoint Temperature,Hourly;
+  Output:Variable,TZ_01,Zone Thermostat Heating Setpoint Temperature,timestep;
 
-  Output:Variable,TZ_01,Zone Thermostat Cooling Setpoint Temperature,Hourly;
+  Output:Variable,TZ_01,Zone Thermostat Cooling Setpoint Temperature,timestep;
 
   Output:Variable,_Availability_Heat_TOTEE-Winter,Schedule Value,Hourly;
 

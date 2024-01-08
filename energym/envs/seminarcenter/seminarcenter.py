@@ -767,10 +767,10 @@ class Seminarcenter(EnvEPlusFMU):
         """
         minute, hour, day, month = self.get_date()
         date = datetime.datetime(2019, month, day, hour, minute)
-        CO2_val = self.CO2_schedule.get(date)
-        inputs["Grid_CO2_sp"] = [CO2_val]
-        out = super().step(inputs=inputs)
-        return out
+        # CO2_val = self.CO2_schedule.get(date)
+        # inputs["Grid_CO2_sp"] = [CO2_val]
+        out, done = super().step(inputs=inputs)
+        return out, done
 
     def __predict_co2(self, steps):
         """Provides a forecast for the CO2 schedule.

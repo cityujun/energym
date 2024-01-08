@@ -224,7 +224,7 @@ class EnvFMU(Env):
         self.kpis = KPI(kpi_options)
 
         # # initialize FMU and spaces
-        self.initialize()
+        # self.initialize() # move to reset()
 
     def __build_input_space(self, input_specs):
         """Collects the inputs from the simulation object.
@@ -470,9 +470,10 @@ class EnvFMU(Env):
             res.append((self.time, out_values))
 
         output = self.post_process(self.output_keys, res, arrays=False)
+        done = self.time == self.stop_time
 
         self.kpis.add_observation(output)
-        return output
+        return output, done
 
     def print_kpis(self):
         """Prints the KPIs."""
@@ -695,33 +696,34 @@ class EnvFMU(Env):
         self.initialize()
 
     def close(self, save=True):
-        """Terminates the FMU and removes leftover folders."""
-        instance_name = self.fmu.instanceName
-        self.fmu.terminate()
-        self.fmu.freeInstance()
-        self.is_fmu_initialized = False
-        try:
-            shutil.rmtree(self.unzipdir)
-        except PermissionError as e:
-            logger.error(f"Folder could not be removed. {e}")
-        cwd = os.getcwd()
-        wd_sub_list = os.listdir(cwd)
-        if save:
-            for directory in wd_sub_list:
-                if instance_name in directory:
-                    try:
-                        shutil.move(
-                            os.path.join(cwd, directory),
-                            os.path.join(self.runs_path, directory),
-                        )
-                    except PermissionError as e:
-                        logger.error(f"Folder could not be moved. {e}")
-        else:
-            for directory in wd_sub_list:
-                if instance_name in directory:
-                    try:
-                        shutil.rmtree(
-                            os.path.join(cwd, directory),
-                        )
-                    except PermissionError as e:
-                        logger.error(f"Folder could not be removed. {e}")
+        if self.is_fmu_initialized:
+            """Terminates the FMU and removes leftover folders."""
+            instance_name = self.fmu.instanceName
+            self.fmu.terminate()
+            self.fmu.freeInstance()
+            self.is_fmu_initialized = False
+            try:
+                shutil.rmtree(self.unzipdir)
+            except PermissionError as e:
+                logger.error(f"Folder could not be removed. {e}")
+            cwd = os.getcwd()
+            wd_sub_list = os.listdir(cwd)
+            if save:
+                for directory in wd_sub_list:
+                    if instance_name in directory:
+                        try:
+                            shutil.move(
+                                os.path.join(cwd, directory),
+                                os.path.join(self.runs_path, directory),
+                            )
+                        except PermissionError as e:
+                            logger.error(f"Folder could not be moved. {e}")
+            else:
+                for directory in wd_sub_list:
+                    if instance_name in directory:
+                        try:
+                            shutil.rmtree(
+                                os.path.join(cwd, directory),
+                            )
+                        except PermissionError as e:
+                            logger.error(f"Folder could not be removed. {e}")

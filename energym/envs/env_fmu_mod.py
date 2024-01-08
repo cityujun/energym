@@ -143,10 +143,10 @@ class EnvModFMU(EnvFMU):
         self.init_vals = {key: init_vals[key] for key in self.input_keys}
         print("the initial variables are", self.init_vals)
 
-        self.set_model_variables(list(params.keys()), list(params.values()))
-        self.set_model_variables(
-            list(self.init_vals.keys()), list(self.init_vals.values())
-        )
+        # self.set_model_variables(list(params.keys()), list(params.values()))
+        # self.set_model_variables(
+        #     list(self.init_vals.keys()), list(self.init_vals.values())
+        # )
 
     def set_model_variables(self, variables, values):
         """Sets value of model variables.
